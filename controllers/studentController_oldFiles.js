@@ -237,3 +237,167 @@ module.exports = {
 //         });
 //     }
 // };
+
+// const addStudent = async (req, res) => {
+//     // Step 1: Handle validation errors
+//     const errors = validationResult(req);
+//     if (!errors.isEmpty()) {
+//         return res.status(422).json({
+//             status: 422,
+//             message: "Validation failed",
+//             errors: errors.array()
+//         });
+//     }
+
+//     try {
+//         const {
+//             firstName, lastName, middleName, dateOfBirth, gender, email,
+//             phone, address, enrollmentNumber, course, yearOfAdmission,
+//             currentYear, section, guardianName, guardianContact,
+//             bloodGroup, nationality, aadharNumber
+//         } = req.body;
+
+//         // Step 2: Check for existing student (by email, enrollmentNumber, or aadharNumber if provided)
+//         const existingStudent = await Student.findOne({
+//             $or: [
+//                 { email: email.toLowerCase() },
+//                 { enrollmentNumber },
+//                 ...(aadharNumber ? [{ aadharNumber }] : [])
+//             ]
+//         });
+
+//         if (existingStudent) {
+//             return res.status(400).json({
+//                 status: 400,
+//                 message: "Student with this email, enrollment number, or Aadhar already exists."
+//             });
+//         }
+
+//         // Step 3: Create and save the student
+//         const newStudent = new Student({
+//             firstName: firstName.trim(),
+//             lastName: lastName.trim(),
+//             middleName: middleName?.trim(),
+//             dateOfBirth,
+//             gender,
+//             email: email.toLowerCase().trim(),
+//             phone,
+//             address,
+//             enrollmentNumber: enrollmentNumber.trim(),
+//             course: course.trim(),
+//             yearOfAdmission,
+//             currentYear,
+//             section: section?.trim(),
+//             guardianName: guardianName?.trim(),
+//             guardianContact,
+//             bloodGroup,
+//             nationality: nationality?.trim(),
+//             aadharNumber
+//         });
+
+//         await newStudent.save();
+
+//         return res.status(201).json({
+//             status: 201,
+//             message: "Student added successfully",
+//             data: newStudent
+//         });
+
+//     } catch (error) {
+//         console.error("Error adding student:", error.message);
+//         return res.status(500).json({
+//             status: 500,
+//             message: "Internal Server Error",
+//             error: error.message
+//         });
+//     }
+// };
+
+
+//  try {
+//     // Destructure and normalize inputs
+//     const {
+//       firstName, lastName, middleName, dateOfBirth, gender, email,
+//       phone, address, enrollmentNumber, course, yearOfAdmission,
+//       currentYear, section, guardianName, guardianContact,
+//       bloodGroup, nationality, aadharNumber
+//     } = req.body;
+
+//     // Normalize for consistent matching
+//     const normalizedEmail = email?.toLowerCase().trim();
+//     const normalizedPhone = phone?.trim();
+//     const normalizedEnrollment = enrollmentNumber?.trim();
+//     const normalizedAadhar = aadharNumber?.trim();
+
+//     // Build duplication check query for any of the unique fields
+//     const duplicateQuery = {
+//       $or: [
+//         { email: normalizedEmail },
+//         { phone: normalizedPhone },
+//         { enrollmentNumber: normalizedEnrollment }
+//       ]
+//     };
+//     if (normalizedAadhar) duplicateQuery.$or.push({ aadharNumber: normalizedAadhar });
+
+//     // Check for existing student
+//     const existingStudent = await Student.findOne(duplicateQuery);
+//     if (existingStudent) {
+//       let duplicateFields = [];
+
+//       if (existingStudent.email === normalizedEmail) {
+//         duplicateFields.push("Email");
+//       }
+//       if (existingStudent.phone === normalizedPhone) {
+//         duplicateFields.push("Phone");
+//       }
+//       if (existingStudent.enrollmentNumber === normalizedEnrollment) {
+//         duplicateFields.push("Enrollment Number");
+//       }
+//       if (normalizedAadhar && existingStudent.aadharNumber === normalizedAadhar) {
+//         duplicateFields.push("Aadhar Number");
+//       }
+
+//       return res.status(400).json({
+//         status: 400,
+//         message: `Student with this ${duplicateFields.join(", ")} already exists.`
+//       });
+//     }
+
+
+//     // Create new student object with trimmed & normalized values
+//     const newStudent = new Student({
+//       firstName: firstName.trim(),
+//       lastName: lastName.trim(),
+//       middleName: middleName?.trim() || "",
+//       dateOfBirth,
+//       gender,
+//       email: normalizedEmail,
+//       phone: normalizedPhone,
+//       address,
+//       enrollmentNumber: normalizedEnrollment,
+//       course: course.trim(),
+//       yearOfAdmission,
+//       currentYear,
+//       section: section?.trim() || "",
+//       guardianName: guardianName?.trim() || "",
+//       guardianContact,
+//       bloodGroup,
+//       nationality: nationality?.trim() || "",
+//       aadharNumber: normalizedAadhar || null
+//     });
+
+//     await newStudent.save();
+
+//     return res.status(201).json({
+//       status: 201,
+//       message: "Student added successfully",
+//       data: newStudent
+//     });
+//   } catch (error) {
+//     console.error("Error adding student:", error);
+//     return res.status(500).json({
+//       status: 500,
+//       message: "Internal Server Error",
+//       error: error.message || error
+//     });
+//   }

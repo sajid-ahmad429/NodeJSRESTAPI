@@ -1,12 +1,15 @@
 require("dotenv").config;
 const express = require("express");
 const app = express(); // FIXED HERE ✅
+app.use(express.json());
+
 const connectDB = require("./config/database");
 const PORT = process.env.PORT || 5000;
 
 // Routes
 const studentRoutes = require("./routes/studentRoutes");
 app.use("/api/students", studentRoutes);
+
 app.get("/", (req, res) => {
     res.send("Hello World...!");
 });
